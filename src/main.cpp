@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Display.h"
 
-int main()
+int main(int argc, char* argv[])
 {
     Display display("CHIP-8 Emulator");
     SDL_Event e;
