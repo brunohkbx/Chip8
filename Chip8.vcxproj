@@ -113,7 +113,7 @@
     <ClCompile Include="src\Memory.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Cpu.h" />
+    <ClInclude Include="src\Chip8.h" />
     <ClInclude Include="src\Display.h" />
     <ClInclude Include="src\Memory.h" />
   </ItemGroup>
