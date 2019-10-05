@@ -12,7 +12,7 @@ find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS} src)
 
 # Find all executables
-file(GLOB PROJECT_SOURCE_DIR *.cpp)
+file(GLOB PROJECT_SOURCE_DIR src/*.cpp)
 
 # Add project executable
 add_executable(Chip8 ${PROJECT_SOURCE_DIR})
