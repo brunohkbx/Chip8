@@ -12,8 +12,8 @@ public:
     void executeInstruction(uint16_t opcode);
 
 private:
-    void draw(int8_t Vx, int8_t Vy, int8_t rows);
-    std::tuple<int8_t, uint16_t, int8_t, int8_t, int8_t, int8_t> decodeOpcode(uint16_t opcode) const;
+    void draw(uint8_t Vx, uint8_t Vy, uint8_t rows);
+    std::tuple<uint8_t, uint16_t, uint8_t, uint8_t, uint8_t, uint8_t> decodeOpcode(uint16_t opcode) const;
 
     Memory& memory;
     Display& display;
