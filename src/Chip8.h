@@ -18,7 +18,7 @@ class Chip8 {
 public:
     Chip8() : cpu(memory, display) {};
     void cycle();
-    void* getDisplayData() const;
+    const void* getDisplayData() const;
 
     Memory memory;
 

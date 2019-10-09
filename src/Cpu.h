@@ -9,7 +9,7 @@
 class CPU {
 public:
     CPU(Memory& memory, Display& display) : memory(memory), display(display) {};
-    void executeInstruction(uint16_t opcode) const;
+    void executeInstruction(uint16_t opcode);
 
 private:
     void draw(int8_t Vx, int8_t Vy, int8_t rows);

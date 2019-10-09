@@ -10,7 +10,7 @@ void Chip8::cycle() {
     PC += 2;
 }
 
-void* Chip8::getDisplayData() const {
+const void* Chip8::getDisplayData() const {
     return display.memory.data();
 }
 
