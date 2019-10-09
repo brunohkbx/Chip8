@@ -19,7 +19,7 @@ x - A 4-bit value, the lower 4 bits of the high byte of the instruction
 y - A 4-bit value, the upper 4 bits of the low byte of the instruction
 kk or byte - An 8-bit value, the lowest 8 bits of the instruction
 */
-std::tuple<int8_t, uint16_t, int8_t, int8_t, int8_t, int8_t> CPU::decodeOpcode(uint16_t opcode) const {
+std::tuple<uint8_t, uint16_t, uint8_t, uint8_t, uint8_t, uint8_t> CPU::decodeOpcode(uint16_t opcode) const {
     uint8_t operation = (opcode & 0xF000u) >> 12u;
     uint16_t nnn = opcode & 0x0FFF;
     uint8_t n = opcode & 0xF;
@@ -37,7 +37,7 @@ Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collis
 Iterates row by row and column by column. Its eight columns because a sprite is guaranteed to be eight pixels wide.
 If a sprite pixel is on then there may be a collision with what's already being displayed, so we check if our screen pixel in the same location is set. If so we must set the VF register to express collision.
 */
-void CPU::draw(int8_t Vx, int8_t Vy, int8_t rows) {
+void CPU::draw(uint8_t Vx, uint8_t Vy, uint8_t rows) {
     uint8_t x = registers[Vx] % Display::WIDTH;
     uint8_t y = registers[Vy] % Display::HEIGHT;
 
