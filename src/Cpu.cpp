@@ -1,7 +1,7 @@
 #include "Cpu.h"
 #include <iostream>
 
-void CPU::executeInstruction(uint16_t opcode) const {
+void CPU::executeInstruction(uint16_t opcode) {
     auto [operation, nnn, n, x, y, kk] = decodeOpcode(opcode);
 
     switch (operation)
@@ -35,7 +35,7 @@ DRW Vx, Vy, nibble
 Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision.
 
 Iterates row by row and column by column. Its eight columns because a sprite is guaranteed to be eight pixels wide.
-If a sprite pixel is on then there may be a collision with what’s already being displayed, so we check if our screen pixel in the same location is set. If so we must set the VF register to express collision.
+If a sprite pixel is on then there may be a collision with what's already being displayed, so we check if our screen pixel in the same location is set. If so we must set the VF register to express collision.
 */
 void CPU::draw(int8_t Vx, int8_t Vy, int8_t rows) {
     uint8_t x = registers[Vx] % Display::WIDTH;
