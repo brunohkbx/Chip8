@@ -1,22 +1,7 @@
 #include "Display.h"
 
-Display::Display(std::string title) {
-    SDL_Init(SDL_INIT_VIDEO);
+uint32_t Display::getPixel(uint8_t y, int row, uint8_t x, int column) const {
+    int index = (y + row) * WIDTH + (x + column);
 
-    window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_RESIZABLE);
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
-}
-
-Display::~Display() {
-	SDL_DestroyWindow(window);
-	SDL_DestroyRenderer(renderer);
-	SDL_Quit();
-}
-
-void Display::update() {
-    SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
+    return memory.at(index);
 }

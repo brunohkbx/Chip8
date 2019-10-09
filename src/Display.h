@@ -1,15 +1,12 @@
 #pragma once
 
-#include <string>
-#include "SDL.h"
+#include <array>
 
 class Display {
 public:
-    Display(std::string title);
-    ~Display();
-    void update();
+    uint32_t getPixel(uint8_t y, int row, uint8_t x, int column) const;
 
-private:
-    SDL_Window* window;
-    SDL_Renderer* renderer;
+    static constexpr int WIDTH = 64;
+    static constexpr int HEIGHT = 32;
+    std::array<uint32_t, WIDTH * HEIGHT> memory{};
 };
