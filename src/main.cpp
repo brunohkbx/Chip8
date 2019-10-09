@@ -1,15 +1,19 @@
 #include <iostream>
-#include "Display.h"
 #include "Chip8.h"
+#include "Renderer.h"
 
 int main(int argc, char* argv[])
-{   
+{
     Chip8 chip8;
-    Display display("CHIP-8 Emulator");
+    Renderer renderer("CHIP-8 Emulator");
     SDL_Event e;
 
+    chip8.memory.loadRom(argv[1]);
+
     while (true) {
-        display.update();
+        chip8.cycle();
+
+        renderer.update(chip8.getDisplayData());
 
         while(SDL_PollEvent(&e)) {
             switch(e.type) {
