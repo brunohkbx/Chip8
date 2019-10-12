@@ -46,6 +46,7 @@ public:
         dispatchTable.emplace(0x5, [this](Opcode opcode) { OP_5xy0(opcode); });
         dispatchTable.emplace(0x6, [this](Opcode opcode) { OP_6xkk(opcode); });
         dispatchTable.emplace(0x7, [this](Opcode opcode) { OP_7xkk(opcode); });
+        dispatchTable.emplace(0x8, [this](Opcode opcode) { executeOP_08(opcode); });
         dispatchTable.emplace(0x9, [this](Opcode opcode) { OP_9xy0(opcode); });
         dispatchTable.emplace(0xA, [this](Opcode opcode) { OP_Annn(opcode); });
         dispatchTable.emplace(0xB, [this](Opcode opcode) { OP_Bnnn(opcode); });
@@ -66,11 +67,21 @@ private:
     void OP_5xy0(Opcode opcode);
     void OP_6xkk(Opcode opcode);
     void OP_7xkk(Opcode opcode);
+    void OP_8xy0(Opcode opcode);
+    void OP_8xy1(Opcode opcode);
+    void OP_8xy2(Opcode opcode);
+    void OP_8xy3(Opcode opcode);
+    void OP_8xy4(Opcode opcode);
+    void OP_8xy5(Opcode opcode);
+    void OP_8xy6(Opcode opcode);
+    void OP_8xy7(Opcode opcode);
+    void OP_8xyE(Opcode opcode);
     void OP_9xy0(Opcode opcode);
     void OP_Annn(Opcode opcode);
     void OP_Bnnn(Opcode opcode);
     void OP_Dxyn(Opcode opcode);
     void executeOP_00(Opcode opcode);
+    void executeOP_08(Opcode opcode);
 
     Memory& memory;
     Display& display;

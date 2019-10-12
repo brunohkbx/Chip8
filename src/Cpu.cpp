@@ -130,6 +130,117 @@ void CPU::OP_7xkk(Opcode opcode) {
 }
 
 /*
+8xy0 - LD Vx, Vy
+Set Vx = Vy.
+
+Stores the value of register Vy in register Vx.
+*/
+void CPU::OP_8xy0(Opcode opcode) {
+    registers.at(opcode.x) = registers.at(opcode.y);
+}
+
+/*
+8xy1 - OR Vx, Vy
+Set Vx = Vx OR Vy.
+
+Performs a bitwise OR on the values of Vx and Vy, then stores the result in Vx. A bitwise OR compares the corrseponding bits from two values, and if either bit is 1, then the same bit in the result is also 1. Otherwise, it is 0.
+*/
+void CPU::OP_8xy1(Opcode opcode) {
+    registers.at(opcode.x) = registers.at(opcode.x) | registers.at(opcode.y);
+}
+
+/*
+8xy2 - AND Vx, Vy
+Set Vx = Vx AND Vy.
+
+Performs a bitwise AND on the values of Vx and Vy, then stores the result in Vx. A bitwise AND compares the corrseponding bits from two values, and if both bits are 1, then the same bit in the result is also 1. Otherwise, it is 0.
+*/
+void CPU::OP_8xy2(Opcode opcode) {
+    registers.at(opcode.x) = registers.at(opcode.x) & registers.at(opcode.y);
+}
+
+/*
+8xy3 - XOR Vx, Vy
+Set Vx = Vx XOR Vy.
+
+Performs a bitwise exclusive OR on the values of Vx and Vy, then stores the result in Vx. An exclusive OR compares the corrseponding bits from two values, and if the bits are not both the same, then the corresponding bit in the result is set to 1. Otherwise, it is 0.
+*/
+void CPU::OP_8xy3(Opcode opcode) {
+    registers.at(opcode.x) = registers.at(opcode.x) ^ registers.at(opcode.y);
+}
+
+/*
+8xy4 - ADD Vx, Vy
+Set Vx = Vx + Vy, set VF = carry.
+
+The values of Vx and Vy are added together. If the result is greater than 8 bits (i.e., > 255,) VF is set to 1, otherwise 0. Only the lowest 8 bits of the result are kept, and stored in Vx.
+*/
+void CPU::OP_8xy4(Opcode opcode) {
+    int sum = registers.at(opcode.x) + registers.at(opcode.y);
+
+    if (sum > 255)
+        registers.at(0xF) = 1;
+    else
+        registers.at(0xF) = 0;
+
+    registers.at(opcode.x) = sum;
+}
+
+/*
+8xy5 - SUB Vx, Vy
+Set Vx = Vx - Vy, set VF = NOT borrow.
+
+If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx, and the results stored in Vx.
+*/
+void CPU::OP_8xy5(Opcode opcode) {
+    if (registers.at(opcode.x) > registers.at(opcode.y))
+        registers.at(0xF) = 1;
+    else
+        registers.at(0xF) = 0;
+
+    registers.at(opcode.x) = registers.at(opcode.x) - registers.at(opcode.y);
+}
+
+/*
+8xy6 - SHR Vx {, Vy}
+Set Vx = Vx SHR 1.
+
+If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
+*/
+void CPU::OP_8xy6(Opcode opcode) {
+    registers.at(0xF) = registers.at(opcode.x) & 0x1;
+
+    registers.at(opcode.x) = registers.at(opcode.x) >> 1;
+}
+
+/*
+8xy7 - SUBN Vx, Vy
+Set Vx = Vy - Vx, set VF = NOT borrow.
+
+If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from Vy, and the results stored in Vx.
+*/
+void CPU::OP_8xy7(Opcode opcode) {
+    if (registers.at(opcode.y) > registers.at(opcode.x))
+        registers.at(0xF) = 1;
+    else
+        registers.at(0xF) = 0;
+
+    registers.at(opcode.x) = registers.at(opcode.y) - registers.at(opcode.x);
+}
+
+/*
+8xyE - SHL Vx {, Vy}
+Set Vx = Vx SHL 1.
+
+If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is multiplied by 2.
+*/
+void CPU::OP_8xyE(Opcode opcode) {
+    registers.at(0xF) = (registers.at(opcode.x) & 0x80) >> 7;
+
+    registers.at(opcode.x) = registers.at(opcode.x) << 1;
+}
+
+/*
 9xy0 - SNE Vx, Vy
 Skip next instruction if Vx != Vy.
 
@@ -199,6 +310,38 @@ void CPU::executeOP_00(Opcode opcode) {
         break;
     case 0x00EE:
         OP_00EE();
+        break;
+    }
+}
+
+void CPU::executeOP_08(Opcode opcode) {
+    switch (opcode.n) {
+    case 0x0:
+        OP_8xy0(opcode);
+        break;
+    case 0x1:
+        OP_8xy1(opcode);
+        break;
+    case 0x2:
+        OP_8xy2(opcode);
+        break;
+    case 0x3:
+        OP_8xy3(opcode);
+        break;
+    case 0x4:
+        OP_8xy4(opcode);
+        break;
+    case 0x5:
+        OP_8xy5(opcode);
+        break;
+    case 0x6:
+        OP_8xy6(opcode);
+        break;
+    case 0x7:
+        OP_8xy7(opcode);
+        break;
+    case 0xE:
+        OP_8xyE(opcode);
         break;
     }
 }
