@@ -2,61 +2,36 @@
 #include <iostream>
 
 void CPU::executeInstruction() {
-    uint16_t opcode = fetchOpcode();
-    auto [operation, nnn, n, x, y, kk] = decodeOpcode(opcode);
+    Opcode opcode = fetchOpcode();
 
     incrementCounter();
 
-    switch (operation)
-    {
-    case 0x0:
-        switch (opcode) {
-        case 0x00E0:
-            OP_00E0();
-            break;
-        case 0x00EE:
-            OP_00EE();
-            break;
-        }
-        break;
-    case 0x1:
-        OP_1nnn(nnn);
-        break;
-    case 0x02:
-        OP_2nnn(nnn);
-        break;
-    case 0x3:
-        OP_3xkk(x, kk);
-        break;
-    case 0x4:
-        OP_4xkk(x, kk);
-        break;
-    case 0x5:
-        OP_5xy0(x, y);
-        break;
-    case 0x6:
-        OP_6xkk(x, kk);
-        break;
-    case 0x7:
-        OP_7xkk(x, kk);
-        break;
-    case 0x9:
-        OP_9xy0(x, y);
-        break;
-    case 0xA:
-        OP_Annn(nnn);
-        break;
-    case 0xB:
-        OP_Bnnn(nnn);
-        break;
-    case 0xD:
-        OP_Dxyn(x, y, n);
-        break;
+    try {
+        dispatchTable.at(opcode.operation)(opcode);
+    }
+    catch (const std::out_of_range & e) {
+        std::cout << "Invalid opcode.";
     }
 }
 
 void CPU::incrementCounter() {
     PC += 2;
+}
+
+/*
+All instructions are 2 bytes long, this method fetches two successive bytes and merges them to get the actual opcode.
+0xA2       0xA2 << 8 = 0xA200   HEX
+10100010   1010001000000000     BIN
+
+1010001000000000 | // 0xA200
+        11110000 = // 0xF0 (0x00F0)
+------------------
+1010001011110000   // 0xA2F0
+*/
+Opcode CPU::fetchOpcode() const {
+    auto page = memory.getPage();
+
+    return Opcode(page.at(PC) << 8 | page.at(PC + 1));
 }
 
 /*
@@ -84,8 +59,8 @@ Jump to location nnn.
 
 The interpreter sets the program counter to nnn.
 */
-void CPU::OP_1nnn(uint16_t nnn) {
-    PC = nnn;
+void CPU::OP_1nnn(Opcode opcode) {
+    PC = opcode.nnn;
 }
 
 /*
@@ -94,10 +69,10 @@ Call subroutine at nnn.
 
 The interpreter increments the stack pointer, then puts the current PC on the top of the stack. The PC is then set to nnn.
 */
-void CPU::OP_2nnn(uint16_t nnn) {
+void CPU::OP_2nnn(Opcode opcode) {
     stack.at(SP) = PC;
     SP++;
-    PC = nnn;
+    PC = opcode.nnn;
 }
 
 /*
@@ -106,8 +81,8 @@ Skip next instruction if Vx = kk.
 
 The interpreter compares register Vx to kk, and if they are equal, increments the program counter by 2.
 */
-void CPU::OP_3xkk(uint8_t x, uint8_t kk) {
-    if (registers.at(x) == kk)
+void CPU::OP_3xkk(Opcode opcode) {
+    if (registers.at(opcode.x) == opcode.kk)
         PC += 2;
 }
 
@@ -117,8 +92,8 @@ Skip next instruction if Vx != kk.
 
 The interpreter compares register Vx to kk, and if they are not equal, increments the program counter by 2.
 */
-void CPU::OP_4xkk(uint8_t x, uint8_t kk) {
-    if (registers.at(x) != kk)
+void CPU::OP_4xkk(Opcode opcode) {
+    if (registers.at(opcode.x) != opcode.kk)
         PC += 2;
 }
 
@@ -128,8 +103,8 @@ Skip next instruction if Vx = Vy.
 
 The interpreter compares register Vx to register Vy, and if they are equal, increments the program counter by 2.
 */
-void CPU::OP_5xy0(uint8_t x, uint8_t y) {
-    if (registers.at(x) == registers.at(y)) {
+void CPU::OP_5xy0(Opcode opcode) {
+    if (registers.at(opcode.x) == registers.at(opcode.y)) {
         PC += 2;
     }
 }
@@ -140,8 +115,8 @@ Set Vx = kk.
 
 The interpreter puts the value kk into register Vx.
 */
-void CPU::OP_6xkk(uint8_t x, uint8_t kk) {
-    registers.at(x) = kk;
+void CPU::OP_6xkk(Opcode opcode) {
+    registers.at(opcode.x) = opcode.kk;
 }
 
 /*
@@ -150,8 +125,8 @@ Set Vx = Vx + kk.
 
 Adds the value kk to the value of register Vx, then stores the result in Vx.
 */
-void CPU::OP_7xkk(uint8_t x, uint8_t kk) {
-    registers.at(x) = registers.at(x) + kk;
+void CPU::OP_7xkk(Opcode opcode) {
+    registers.at(opcode.x) = registers.at(opcode.x) + opcode.kk;
 }
 
 /*
@@ -160,8 +135,8 @@ Skip next instruction if Vx != Vy.
 
 The values of Vx and Vy are compared, and if they are not equal, the program counter is increased by 2.
 */
-void CPU::OP_9xy0(uint8_t x, uint8_t y) {
-    if (registers.at(x) != registers.at(y)) {
+void CPU::OP_9xy0(Opcode opcode) {
+    if (registers.at(opcode.x) != registers.at(opcode.y)) {
         PC += 2;
     }
 }
@@ -172,8 +147,8 @@ Set I = nnn.
 
 The value of register I is set to nnn.
 */
-void CPU::OP_Annn(uint16_t nnn) {
-    index = nnn;
+void CPU::OP_Annn(Opcode opcode) {
+    index = opcode.nnn;
 }
 
 /*
@@ -182,8 +157,8 @@ Jump to location nnn + V0.
 
 The program counter is set to nnn plus the value of V0.
 */
-void CPU::OP_Bnnn(uint16_t nnn) {
-    PC = registers.at(0) + nnn;
+void CPU::OP_Bnnn(Opcode opcode) {
+    PC = registers.at(0) + opcode.nnn;
 }
 
 /*
@@ -193,13 +168,13 @@ Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collis
 Iterates row by row and column by column. Its eight columns because a sprite is guaranteed to be eight pixels wide.
 If a sprite pixel is on then there may be a collision with what's already being displayed, so we check if our screen pixel in the same location is set. If so we must set the VF register to express collision.
 */
-void CPU::OP_Dxyn(uint8_t x, uint8_t y, uint8_t rows) {
-    uint8_t xCord = registers.at(x) % Display::WIDTH;
-    uint8_t yCord = registers.at(y) % Display::HEIGHT;
+void CPU::OP_Dxyn(Opcode opcode) {
+    uint8_t xCord = registers.at(opcode.x) % Display::WIDTH;
+    uint8_t yCord = registers.at(opcode.y) % Display::HEIGHT;
 
     registers.at(0xF) = 0;
 
-    for (int row = 0; row < rows; row++) {
+    for (int row = 0; row < opcode.n; row++) {
         uint8_t pixelByte = memory.getPage().at(index + row);
 
         for (int column = 0; column < 8; column++) {
@@ -217,36 +192,13 @@ void CPU::OP_Dxyn(uint8_t x, uint8_t y, uint8_t rows) {
     }
 }
 
-/*
-All instructions are 2 bytes long, this method fetches two successive bytes and merges them to get the actual opcode.
-0xA2       0xA2 << 8 = 0xA200   HEX
-10100010   1010001000000000     BIN
-
-1010001000000000 | // 0xA200
-        11110000 = // 0xF0 (0x00F0)
-------------------
-1010001011110000   // 0xA2F0
-*/
-uint16_t CPU::fetchOpcode() const {
-    auto page = memory.getPage();
-
-    return page.at(PC) << 8 | page.at(PC + 1);
-}
-
-/*
-nnn or addr - A 12-bit value, the lowest 12 bits of the instruction
-n or nibble - A 4-bit value, the lowest 4 bits of the instruction
-x - A 4-bit value, the lower 4 bits of the high byte of the instruction
-y - A 4-bit value, the upper 4 bits of the low byte of the instruction
-kk or byte - An 8-bit value, the lowest 8 bits of the instruction
-*/
-std::tuple<uint8_t, uint16_t, uint8_t, uint8_t, uint8_t, uint8_t> CPU::decodeOpcode(uint16_t opcode) const {
-    uint8_t operation = (opcode & 0xF000) >> 12;
-    uint16_t nnn = opcode & 0x0FFF;
-    uint8_t n = opcode & 0xF;
-    uint8_t x = (opcode >> 8) & 0xF;
-    uint8_t y = (opcode >> 4) & 0xF;
-    uint8_t kk = opcode & 0x00FF;
-
-    return { operation, nnn, n, x, y, kk };
+void CPU::executeOP_00(Opcode opcode) {
+    switch (opcode.instruction) {
+    case 0x00E0:
+        OP_00E0();
+        break;
+    case 0x00EE:
+        OP_00EE();
+        break;
+    }
 }
