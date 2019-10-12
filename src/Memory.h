@@ -34,14 +34,14 @@ public:
     static constexpr int MAX_MEMORY = 4096;
     static constexpr int PROGRAM_SPACE = 0x200;
     static constexpr int MAX_PROGRAM_SIZE = MAX_MEMORY - PROGRAM_SPACE;
+    static constexpr int SPRITE_SIZE = 5;
 
-public:
     Memory();
     void loadRom(std::string path);
-    const std::array<uint8_t, MAX_MEMORY>& getPage() const { return page; };
+
+    std::array<uint8_t, MAX_MEMORY> page{};
 
 private:
-    std::array<uint8_t, MAX_MEMORY> page{};
     const std::vector<uint8_t> FONTSET = {
         0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
         0x20, 0x60, 0x20, 0x20, 0x70, // 1

@@ -29,9 +29,7 @@ All instructions are 2 bytes long, this method fetches two successive bytes and 
 1010001011110000   // 0xA2F0
 */
 Opcode CPU::fetchOpcode() const {
-    auto page = memory.getPage();
-
-    return Opcode(page.at(PC) << 8 | page.at(PC + 1));
+    return Opcode(memory.page.at(PC) << 8 | memory.page.at(PC + 1));
 }
 
 /*
@@ -286,7 +284,7 @@ void CPU::OP_Dxyn(Opcode opcode) {
     registers.at(0xF) = 0;
 
     for (int row = 0; row < opcode.n; row++) {
-        uint8_t pixelByte = memory.getPage().at(index + row);
+        uint8_t pixelByte = memory.page.at(index + row);
 
         for (int column = 0; column < 8; column++) {
             // The instruction (0x80(128) >> column) has a special meaning. Its binary representation is 0b10000000 so we can shift the bit by column to check if a specific bit is set.
@@ -300,6 +298,107 @@ void CPU::OP_Dxyn(Opcode opcode) {
                 display.setPixel(yCord, row, xCord, column);
             }
         }
+    }
+}
+
+/*
+Fx07 - LD Vx, DT
+Set Vx = delay timer value.
+
+The value of DT is placed into Vx.
+*/
+void CPU::OP_Fx07(Opcode opcode) {
+    // TODO: Implement delay timer
+}
+
+/*
+Fx0A - LD Vx, K
+Wait for a key press, store the value of the key in Vx.
+
+All execution stops until a key is pressed, then the value of that key is stored in Vx.
+*/
+void CPU::OP_Fx0A(Opcode opcode) {
+    // TODO: Implement keyboard
+}
+
+/*
+Fx15 - LD DT, Vx
+Set delay timer = Vx.
+
+DT is set equal to the value of Vx.
+*/
+void CPU::OP_Fx15(Opcode opcode) {
+    // TODO: Implement delay timer
+}
+
+/*
+Fx18 - LD ST, Vx
+Set sound timer = Vx.
+
+ST is set equal to the value of Vx.
+*/
+void CPU::OP_Fx18(Opcode opcode) {
+    // TODO: Implement sound timer
+}
+
+/*
+Fx1E - ADD I, Vx
+Set I = I + Vx.
+
+The values of I and Vx are added, and the results are stored in I.
+*/
+void CPU::OP_Fx1E(Opcode opcode) {
+    index += registers.at(opcode.x);
+}
+
+/*
+Fx29 - LD F, Vx
+Set I = location of sprite for digit Vx.
+
+The value of I is set to the location for the hexadecimal sprite corresponding to the value of Vx.
+*/
+void CPU::OP_Fx29(Opcode opcode) {
+    index = registers.at(opcode.x) * Memory::SPRITE_SIZE;
+}
+
+/*
+Fx33 - LD B, Vx
+Store BCD representation of Vx in memory locations I, I+1, and I+2.
+
+The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.
+
+For instance, if the value of the register Vx is 255, then the following values will be set in memory:
+    memory.page.at(index)       = 2
+    memory.page.at(index + 1)   = 5
+    memory.page.at(index + 2)   = 5
+*/
+void CPU::OP_Fx33(Opcode opcode) {
+    memory.page.at(index)       = (registers.at(opcode.x) / 100);
+    memory.page.at(index + 1)   = (registers.at(opcode.x) / 10) % 10;
+    memory.page.at(index + 2)   = registers.at(opcode.x) % 10;
+}
+
+/*
+Fx55 - LD [I], Vx
+Store registers V0 through Vx in memory starting at location I.
+
+The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
+*/
+void CPU::OP_Fx55(Opcode opcode) {
+    for (int i = 0; i <= opcode.x; i++) {
+        memory.page.at(index + i) = registers.at(i);
+    }
+}
+
+/*
+Fx65 - LD Vx, [I]
+Read registers V0 through Vx from memory starting at location I.
+
+The interpreter reads values from memory starting at location I into registers V0 through Vx.
+*/
+void CPU::OP_Fx65(Opcode opcode) {
+    for (int i = 0; i <= opcode.x; i++) {
+        registers.at(i) = memory.page.at(index + i);
     }
 }
 
@@ -342,6 +441,38 @@ void CPU::executeOP_08(Opcode opcode) {
         break;
     case 0xE:
         OP_8xyE(opcode);
+        break;
+    }
+}
+
+void CPU::executeOP_0F(Opcode opcode) {
+    switch (opcode.kk) {
+    case 0x07:
+        OP_Fx07(opcode);
+        break;
+    case 0x0A:
+        OP_Fx0A(opcode);
+        break;
+    case 0x15:
+        OP_Fx15(opcode);
+        break;
+    case 0x18:
+        OP_Fx18(opcode);
+        break;
+    case 0x1E:
+        OP_Fx1E(opcode);
+        break;
+    case 0x29:
+        OP_Fx29(opcode);
+        break;
+    case 0x33:
+        OP_Fx33(opcode);
+        break;
+    case 0x55:
+        OP_Fx55(opcode);
+        break;
+    case 0x65:
+        OP_Fx65(opcode);
         break;
     }
 }
