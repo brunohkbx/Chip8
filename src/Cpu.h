@@ -51,6 +51,7 @@ public:
         dispatchTable.emplace(0xA, [this](Opcode opcode) { OP_Annn(opcode); });
         dispatchTable.emplace(0xB, [this](Opcode opcode) { OP_Bnnn(opcode); });
         dispatchTable.emplace(0xD, [this](Opcode opcode) { OP_Dxyn(opcode); });
+        dispatchTable.emplace(0xF, [this](Opcode opcode) { executeOP_0F(opcode); });
     }
 
     void executeInstruction();
@@ -80,8 +81,18 @@ private:
     void OP_Annn(Opcode opcode);
     void OP_Bnnn(Opcode opcode);
     void OP_Dxyn(Opcode opcode);
+    void OP_Fx07(Opcode opcode);
+    void OP_Fx0A(Opcode opcode);
+    void OP_Fx15(Opcode opcode);
+    void OP_Fx18(Opcode opcode);
+    void OP_Fx1E(Opcode opcode);
+    void OP_Fx29(Opcode opcode);
+    void OP_Fx33(Opcode opcode);
+    void OP_Fx55(Opcode opcode);
+    void OP_Fx65(Opcode opcode);
     void executeOP_00(Opcode opcode);
     void executeOP_08(Opcode opcode);
+    void executeOP_0F(Opcode opcode);
 
     Memory& memory;
     Display& display;
