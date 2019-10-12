@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "Display.h"
 
 Renderer::Renderer(std::string title) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -6,7 +7,7 @@ Renderer::Renderer(std::string title) {
     window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_RESIZABLE);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     texture = SDL_CreateTexture(
-        renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 64, 32
+        renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, Display::WIDTH, Display::HEIGHT
     );
 
 }
@@ -19,7 +20,8 @@ Renderer::~Renderer() {
 }
 
 void Renderer::update(const void* pixels) {
-    SDL_UpdateTexture(texture, nullptr, pixels, 64 * sizeof(uint32_t));
+    SDL_UpdateTexture(texture, nullptr, pixels, Display::WIDTH * sizeof(uint32_t));
     SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
     SDL_RenderPresent(renderer);
 }
