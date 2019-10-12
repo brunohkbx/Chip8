@@ -23,11 +23,6 @@ public:
     Memory memory;
 
 private:
-    uint16_t fetchOpcode() const;
-
-    uint16_t PC = 0x200;
-    uint8_t SP;
-    std::vector<uint16_t> stack;
     CPU cpu;
     Display display;
 };
