@@ -302,6 +302,32 @@ void CPU::OP_Dxyn(Opcode opcode) {
 }
 
 /*
+Ex9E - SKP Vx
+Skip next instruction if key with the value of Vx is pressed.
+
+Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
+*/
+void CPU::OP_Ex9E(Opcode opcode) {
+    uint8_t key = registers.at(opcode.x);
+
+    if (keypad.at(key))
+        PC += 2;
+}
+
+/*
+ExA1 - SKNP Vx
+Skip next instruction if key with the value of Vx is not pressed.
+
+Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
+*/
+void CPU::OP_ExA1(Opcode opcode) {
+    uint8_t key = registers.at(opcode.x);
+
+    if (!keypad.at(key))
+        PC += 2;
+}
+
+/*
 Fx07 - LD Vx, DT
 Set Vx = delay timer value.
 
@@ -441,6 +467,17 @@ void CPU::executeOP_08(Opcode opcode) {
         break;
     case 0xE:
         OP_8xyE(opcode);
+        break;
+    }
+}
+
+void CPU::executeOP_0E(Opcode opcode) {
+    switch (opcode.kk) {
+    case 0x9E:
+        OP_Ex9E(opcode);
+        break;
+    case 0xA1:
+        OP_ExA1(opcode);
         break;
     }
 }

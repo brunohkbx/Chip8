@@ -35,9 +35,19 @@ public:
     const uint8_t kk;
 };
 
+/*
+Chip-8 has 16 general-purpose 8-bit registers, usually referred to as Vx, where x is a hexadecimal digit (0 through F). There is also a 16-bit register called I.
+The program counter (PC) should be 16-bit and is used to store the currently executing address most Chip-8 programs start at location 0x200 (512).
+The stack pointer (SP) can be 8-bit, it is used to point to the topmost level of the stack.
+The stack is an array of 16 16-bit values, used to store the address that the interpreter should  return to when finished with a subroutine.
+*/
 class CPU {
 public:
-    CPU(Memory& memory, Display& display) : memory(memory), display(display) {
+    CPU(
+        Memory& memory,
+        Display& display,
+        const std::array<uint8_t, 16>& keypad
+    ) : memory(memory), display(display), keypad(keypad) {
         dispatchTable.emplace(0x0, [this](Opcode opcode) { executeOP_00(opcode); });
         dispatchTable.emplace(0x1, [this](Opcode opcode) { OP_1nnn(opcode); });
         dispatchTable.emplace(0x2, [this](Opcode opcode) { OP_2nnn(opcode); });
@@ -51,8 +61,9 @@ public:
         dispatchTable.emplace(0xA, [this](Opcode opcode) { OP_Annn(opcode); });
         dispatchTable.emplace(0xB, [this](Opcode opcode) { OP_Bnnn(opcode); });
         dispatchTable.emplace(0xD, [this](Opcode opcode) { OP_Dxyn(opcode); });
+        dispatchTable.emplace(0xE, [this](Opcode opcode) { executeOP_0E(opcode); });
         dispatchTable.emplace(0xF, [this](Opcode opcode) { executeOP_0F(opcode); });
-    }
+    };
 
     void executeInstruction();
     void incrementCounter();
@@ -81,6 +92,8 @@ private:
     void OP_Annn(Opcode opcode);
     void OP_Bnnn(Opcode opcode);
     void OP_Dxyn(Opcode opcode);
+    void OP_Ex9E(Opcode opcode);
+    void OP_ExA1(Opcode opcode);
     void OP_Fx07(Opcode opcode);
     void OP_Fx0A(Opcode opcode);
     void OP_Fx15(Opcode opcode);
@@ -92,10 +105,12 @@ private:
     void OP_Fx65(Opcode opcode);
     void executeOP_00(Opcode opcode);
     void executeOP_08(Opcode opcode);
+    void executeOP_0E(Opcode opcode);
     void executeOP_0F(Opcode opcode);
 
     Memory& memory;
     Display& display;
+    const std::array<uint8_t, 16>& keypad;
     uint16_t index{};
     uint16_t PC = 0x200;
     std::array<uint8_t, 16> registers{};
