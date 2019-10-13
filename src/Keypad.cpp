@@ -32,7 +32,11 @@ const std::map<int, SDL_Keycode> Keypad::LAYOUT = {
 };
 
 void Keypad::setKey(SDL_Keycode keyboardKey, uint8_t value) {
-    int keypadKey = LAYOUT.at(keyboardKey);
+    auto search = LAYOUT.find(keyboardKey);
 
-    memory.at(keypadKey) = value;
+    if (search != LAYOUT.end()) {
+        int keypadKey = search->second;
+
+        memory.at(keypadKey) = value;
+    }
 }
