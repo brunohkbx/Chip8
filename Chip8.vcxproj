@@ -113,6 +113,7 @@
     <ClCompile Include="src\Chip8.cpp" />
     <ClCompile Include="src\Cpu.cpp" />
     <ClCompile Include="src\Display.cpp" />
+    <ClCompile Include="src\Keypad.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Memory.cpp" />
@@ -121,6 +122,7 @@
     <ClInclude Include="src\Chip8.h" />
     <ClInclude Include="src\Cpu.h" />
     <ClInclude Include="src\Display.h" />
+    <ClInclude Include="src\Keypad.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Memory.h" />
   </ItemGroup>

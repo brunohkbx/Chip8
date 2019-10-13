@@ -313,7 +313,7 @@ Checks the keyboard, and if the key corresponding to the value of Vx is currentl
 void CPU::OP_Ex9E(Opcode opcode) {
     uint8_t key = registers.at(opcode.x);
 
-    if (keypad.at(key))
+    if (keypad.memory.at(key))
         PC += 2;
 }
 
@@ -326,7 +326,7 @@ Checks the keyboard, and if the key corresponding to the value of Vx is currentl
 void CPU::OP_ExA1(Opcode opcode) {
     uint8_t key = registers.at(opcode.x);
 
-    if (!keypad.at(key))
+    if (!keypad.memory.at(key))
         PC += 2;
 }
 
@@ -347,7 +347,18 @@ Wait for a key press, store the value of the key in Vx.
 All execution stops until a key is pressed, then the value of that key is stored in Vx.
 */
 void CPU::OP_Fx0A(Opcode opcode) {
-    // TODO: Implement keyboard
+    bool keyPressed = false;
+
+    for (auto value : keypad.memory) {
+        if (value) {
+            registers.at(opcode.x) = value;
+            keyPressed = true;
+        }
+    }
+
+    // Run the same instruction again
+    if (!keyPressed)
+        PC -= 2;
 }
 
 /*

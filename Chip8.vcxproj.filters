@@ -7,6 +7,7 @@
     <ClCompile Include="src\Cpu.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Display.cpp" />
+    <ClCompile Include="src\Keypad.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Chip8.h" />
@@ -14,6 +15,7 @@
     <ClInclude Include="src\Cpu.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Display.h" />
+    <ClInclude Include="src\Keypad.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Chip8.ruleset" />

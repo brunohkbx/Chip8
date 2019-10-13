@@ -3,6 +3,7 @@
 #include "Memory.h"
 #include "Cpu.h"
 #include "Display.h"
+#include "Keypad.h"
 
 class Chip8 {
 public:
@@ -11,7 +12,7 @@ public:
     const void* getDisplayData() const;
 
     Memory memory;
-    std::array<uint8_t, 16> keypad{};
+    Keypad keypad;
 
 private:
     CPU cpu;
