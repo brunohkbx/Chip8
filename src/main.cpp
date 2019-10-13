@@ -6,20 +6,18 @@ int main(int argc, char* argv[])
 {
     Chip8 chip8;
     Renderer renderer("CHIP-8 Emulator");
-    SDL_Event e;
+    bool quit = false;
 
     chip8.memory.loadRom(argv[1]);
 
-    while (true) {
+    while (!quit) {
         chip8.cycle();
 
         renderer.update(chip8.getDisplayData());
 
-        while(SDL_PollEvent(&e)) {
-            switch(e.type) {
-                case SDL_QUIT:
-                    exit(0);
-            }
-        }
+        quit = renderer.handleInput(chip8.keypad);
     }
+
+    SDL_Quit();
+    exit(0);
 }

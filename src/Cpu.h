@@ -6,6 +6,7 @@
 #include <functional>
 #include "Memory.h"
 #include "Display.h"
+#include "Keypad.h"
 
 /*
 nnn or addr - A 12-bit value, the lowest 12 bits of the instruction
@@ -46,7 +47,7 @@ public:
     CPU(
         Memory& memory,
         Display& display,
-        const std::array<uint8_t, 16>& keypad
+        Keypad& keypad
     ) : memory(memory), display(display), keypad(keypad) {
         dispatchTable.emplace(0x0, [this](Opcode opcode) { executeOP_00(opcode); });
         dispatchTable.emplace(0x1, [this](Opcode opcode) { OP_1nnn(opcode); });
@@ -110,7 +111,7 @@ private:
 
     Memory& memory;
     Display& display;
-    const std::array<uint8_t, 16>& keypad;
+    const Keypad& keypad;
     uint16_t index{};
     uint16_t PC = 0x200;
     std::array<uint8_t, 16> registers{};

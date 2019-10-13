@@ -9,7 +9,6 @@ Renderer::Renderer(std::string title) {
     texture = SDL_CreateTexture(
         renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, Display::WIDTH, Display::HEIGHT
     );
-
 }
 
 Renderer::~Renderer() {
@@ -24,4 +23,21 @@ void Renderer::update(const void* pixels) {
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, nullptr, nullptr);
     SDL_RenderPresent(renderer);
+}
+
+bool Renderer::handleInput(Keypad& keypad) {
+    SDL_Event event;
+
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_QUIT:
+            return true;
+        case SDL_KEYDOWN:
+            keypad.setKey(event.key.keysym.sym, 1);
+            break;
+        case SDL_KEYUP:
+            keypad.setKey(event.key.keysym.sym, 0);
+            break;
+        }
+    }
 }
