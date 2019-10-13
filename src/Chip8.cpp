@@ -3,6 +3,9 @@
 #include "Cpu.h"
 
 void Chip8::cycle() {
+    if (cpu.soundTimer == 1)
+        beeper.beep();
+
     cpu.executeInstruction();
 }
 

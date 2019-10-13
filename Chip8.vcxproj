@@ -110,6 +110,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Beeper.cpp" />
     <ClCompile Include="src\Chip8.cpp" />
     <ClCompile Include="src\Cpu.cpp" />
     <ClCompile Include="src\Display.cpp" />
@@ -119,6 +120,7 @@
     <ClCompile Include="src\Memory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Beeper.h" />
     <ClInclude Include="src\Chip8.h" />
     <ClInclude Include="src\Cpu.h" />
     <ClInclude Include="src\Display.h" />

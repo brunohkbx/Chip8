@@ -4,6 +4,8 @@
 
 int main(int argc, char* argv[])
 {
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+
     Chip8 chip8;
     Renderer renderer("CHIP-8 Emulator");
     bool quit = false;
