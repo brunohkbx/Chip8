@@ -8,6 +8,9 @@ void CPU::executeInstruction() {
 
     try {
         dispatchTable.at(opcode.operation)(opcode);
+
+        if (delayTimer)
+            delayTimer--;
     }
     catch (const std::out_of_range & e) {
         std::cout << "Invalid opcode.";
@@ -334,7 +337,7 @@ Set Vx = delay timer value.
 The value of DT is placed into Vx.
 */
 void CPU::OP_Fx07(Opcode opcode) {
-    // TODO: Implement delay timer
+    registers.at(opcode.x) = delayTimer;
 }
 
 /*
@@ -354,7 +357,7 @@ Set delay timer = Vx.
 DT is set equal to the value of Vx.
 */
 void CPU::OP_Fx15(Opcode opcode) {
-    // TODO: Implement delay timer
+    delayTimer = registers.at(opcode.x);
 }
 
 /*
