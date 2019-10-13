@@ -9,6 +9,8 @@ Memory::Memory() {
 
 void Memory::loadRom(std::string path) {
     std::ifstream rom(path, std::ios::in | std::ios::binary);
+    rom.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
     std::vector<uint8_t> data((std::istreambuf_iterator<char>(rom)), std::istreambuf_iterator<char>());
 
     if (data.size() > MAX_PROGRAM_SIZE) {
