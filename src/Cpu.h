@@ -4,6 +4,7 @@
 #include <tuple>
 #include <map>
 #include <functional>
+#include <random>
 #include "Memory.h"
 #include "Display.h"
 #include "Keypad.h"
@@ -44,27 +45,7 @@ The stack is an array of 16 16-bit values, used to store the address that the in
 */
 class CPU {
 public:
-    CPU(
-        Memory& memory,
-        Display& display,
-        Keypad& keypad
-    ) : memory(memory), display(display), keypad(keypad) {
-        dispatchTable.emplace(0x0, [this](Opcode opcode) { executeOP_00(opcode); });
-        dispatchTable.emplace(0x1, [this](Opcode opcode) { OP_1nnn(opcode); });
-        dispatchTable.emplace(0x2, [this](Opcode opcode) { OP_2nnn(opcode); });
-        dispatchTable.emplace(0x3, [this](Opcode opcode) { OP_3xkk(opcode); });
-        dispatchTable.emplace(0x4, [this](Opcode opcode) { OP_4xkk(opcode); });
-        dispatchTable.emplace(0x5, [this](Opcode opcode) { OP_5xy0(opcode); });
-        dispatchTable.emplace(0x6, [this](Opcode opcode) { OP_6xkk(opcode); });
-        dispatchTable.emplace(0x7, [this](Opcode opcode) { OP_7xkk(opcode); });
-        dispatchTable.emplace(0x8, [this](Opcode opcode) { executeOP_08(opcode); });
-        dispatchTable.emplace(0x9, [this](Opcode opcode) { OP_9xy0(opcode); });
-        dispatchTable.emplace(0xA, [this](Opcode opcode) { OP_Annn(opcode); });
-        dispatchTable.emplace(0xB, [this](Opcode opcode) { OP_Bnnn(opcode); });
-        dispatchTable.emplace(0xD, [this](Opcode opcode) { OP_Dxyn(opcode); });
-        dispatchTable.emplace(0xE, [this](Opcode opcode) { executeOP_0E(opcode); });
-        dispatchTable.emplace(0xF, [this](Opcode opcode) { executeOP_0F(opcode); });
-    };
+    CPU(Memory& memory, Display& display, Keypad& keypad);
 
     void executeInstruction();
     void incrementCounter();
@@ -95,6 +76,7 @@ private:
     void OP_9xy0(Opcode opcode);
     void OP_Annn(Opcode opcode);
     void OP_Bnnn(Opcode opcode);
+    void OP_Cxkk(Opcode opcode);
     void OP_Dxyn(Opcode opcode);
     void OP_Ex9E(Opcode opcode);
     void OP_ExA1(Opcode opcode);
@@ -121,4 +103,5 @@ private:
     uint8_t SP{};
     std::array<uint16_t, 16> stack{};
     std::map<uint8_t, std::function<void(Opcode)>> dispatchTable;
+    std::mt19937 rng;
 };

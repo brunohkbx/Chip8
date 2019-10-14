@@ -1,6 +1,31 @@
 #include "Cpu.h"
 #include <iostream>
 
+CPU::CPU(
+    Memory& memory,
+    Display& display,
+    Keypad& keypad
+) : memory(memory), display(display), keypad(keypad) {
+    dispatchTable.emplace(0x0, [this](Opcode opcode) { executeOP_00(opcode); });
+    dispatchTable.emplace(0x1, [this](Opcode opcode) { OP_1nnn(opcode); });
+    dispatchTable.emplace(0x2, [this](Opcode opcode) { OP_2nnn(opcode); });
+    dispatchTable.emplace(0x3, [this](Opcode opcode) { OP_3xkk(opcode); });
+    dispatchTable.emplace(0x4, [this](Opcode opcode) { OP_4xkk(opcode); });
+    dispatchTable.emplace(0x5, [this](Opcode opcode) { OP_5xy0(opcode); });
+    dispatchTable.emplace(0x6, [this](Opcode opcode) { OP_6xkk(opcode); });
+    dispatchTable.emplace(0x7, [this](Opcode opcode) { OP_7xkk(opcode); });
+    dispatchTable.emplace(0x8, [this](Opcode opcode) { executeOP_08(opcode); });
+    dispatchTable.emplace(0x9, [this](Opcode opcode) { OP_9xy0(opcode); });
+    dispatchTable.emplace(0xA, [this](Opcode opcode) { OP_Annn(opcode); });
+    dispatchTable.emplace(0xB, [this](Opcode opcode) { OP_Bnnn(opcode); });
+    dispatchTable.emplace(0xC, [this](Opcode opcode) { OP_Cxkk(opcode); });
+    dispatchTable.emplace(0xD, [this](Opcode opcode) { OP_Dxyn(opcode); });
+    dispatchTable.emplace(0xE, [this](Opcode opcode) { executeOP_0E(opcode); });
+    dispatchTable.emplace(0xF, [this](Opcode opcode) { executeOP_0F(opcode); });
+    
+    rng.seed(std::random_device()());
+};
+
 void CPU::executeInstruction() {
     Opcode opcode = fetchOpcode();
 
@@ -268,6 +293,15 @@ The program counter is set to nnn plus the value of V0.
 */
 void CPU::OP_Bnnn(Opcode opcode) {
     PC = registers.at(0) + opcode.nnn;
+}
+
+/*
+Set Vx = random byte AND kk.
+
+The interpreter generates a random number from 0 to 255, which is then added with the value kk. The results are stored in Vx. See instruction 8xy2 for more information on AND.
+*/
+void CPU::OP_Cxkk(Opcode opcode) {
+    registers.at(opcode.x) = std::uniform_int_distribution<unsigned int>(0, 255)(rng) & opcode.kk;
 }
 
 /*
