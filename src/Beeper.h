@@ -5,6 +5,7 @@
 class Beeper {
 public:
     Beeper();
+    ~Beeper();
     void beep();
 
 private:
