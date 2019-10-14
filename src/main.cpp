@@ -24,10 +24,7 @@ int main(int argc, char* argv[])
         chip8.memory.loadRom(argv[1]);
     }
     catch (std::ifstream::failure e) {
-        if (errno)
-            std::cout << strerror(errno) << std::endl;
-        else
-            std::cout << e.what() << std::endl;
+        std::cout << "No such file or directory. " << e.what() << std::endl;
         return EXIT_FAILURE;
     }
 
