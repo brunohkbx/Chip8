@@ -69,6 +69,7 @@ public:
     void executeInstruction();
     void incrementCounter();
 
+    uint8_t delayTimer{};
     uint8_t soundTimer{};
 
 private:
@@ -118,7 +119,6 @@ private:
     uint16_t PC = 0x200;
     std::array<uint8_t, 16> registers{};
     uint8_t SP{};
-    uint8_t delayTimer{};
     std::array<uint16_t, 16> stack{};
     std::map<uint8_t, std::function<void(Opcode)>> dispatchTable;
 };

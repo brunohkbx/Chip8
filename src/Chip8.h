@@ -11,6 +11,7 @@ public:
     Chip8() : cpu(memory, display, keypad) {};
     void cycle();
     const void* getDisplayData() const;
+    void decrementTimers();
 
     Memory memory;
     Keypad keypad;
