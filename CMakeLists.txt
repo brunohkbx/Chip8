@@ -18,3 +18,6 @@ file(GLOB PROJECT_SOURCE_DIR src/*.cpp)
 add_executable(Chip8 ${PROJECT_SOURCE_DIR})
 string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
 target_link_libraries(Chip8 ${SDL2_LIBRARIES})
+
+# Copy assets
+file(COPY src/assets DESTINATION ${CMAKE_BINARY_DIR}/src)
