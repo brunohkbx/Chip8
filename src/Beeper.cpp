@@ -2,7 +2,7 @@
 #include <iostream>
 
 Beeper::Beeper() {
-    if (SDL_LoadWAV("src/resources/buzz.wav", &wavSpec, &wavBuffer, &wavLength) == nullptr)
+    if (SDL_LoadWAV("src/assets/buzz.wav", &wavSpec, &wavBuffer, &wavLength) == nullptr)
         SDL_Log("%s", SDL_GetError());
 
     deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
