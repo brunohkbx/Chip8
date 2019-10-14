@@ -36,6 +36,8 @@ bool Renderer::handleInput(Keypad& keypad) {
         case SDL_KEYUP:
             keypad.setKey(event.key.keysym.sym, 0);
             break;
+        default:
+            return false;
         }
     }
 }
