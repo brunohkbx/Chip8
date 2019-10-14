@@ -1,4 +1,5 @@
 # Chip8
+CHIP-8 is an interpreted programming language, developed by Joseph Weisbecker. It was initially used on the COSMAC VIP and Telmac 1800 8-bit microcomputers in the mid-1970s. CHIP-8 programs are run on a CHIP-8 virtual machine. It was made to allow video games to be more easily programmed for these computers.
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
@@ -14,9 +15,29 @@
 
 ## Basic Build Instructions
 1. Clone this repo.
+
+### Linux/Mac
 2. Make a build directory in the top level directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
 4. Run it: `./Chip8 <rom_name>`. You can choose one from the 23 public domain ROMs in the `roms` directory.
+
+### Windows
+2. Import the project on Visual Studio
+3. Run it passing a rom file as param
+
+## Controls
+```
+Keypad                   Keyboard
++-+-+-+-+                +-+-+-+-+
+|1|2|3|C|                |1|2|3|4|
++-+-+-+-+                +-+-+-+-+
+|4|5|6|D|                |Q|W|E|R|
++-+-+-+-+       =>       +-+-+-+-+
+|7|8|9|E|                |A|S|D|F|
++-+-+-+-+                +-+-+-+-+
+|A|0|B|F|                |Z|X|C|V|
++-+-+-+-+                +-+-+-+-+
+```
 
 ## Testing the implementation
 There are two roms that can be used to check the CPU:
@@ -26,3 +47,20 @@ There are two roms that can be used to check the CPU:
 
 ##### [chip8-test-rom](https://github.com/corax89/chip8-test-rom)
 `./Chip8 ../roms/test/chip8-test-rom.ch8`
+
+## References
+http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#Ex9E
+
+http://www.multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
+
+https://www.youtube.com/watch?v=rpLoS7B6T94
+
+https://austinmorlan.com/posts/chip8_emulator/
+
+## Screenshots
+
+### Space Invaders
+![Space Invaders](screenshots/space-invaders.png)
+
+### BLINKY
+![BLINKY](screenshots/blinky.png)
