@@ -22,7 +22,7 @@ CPU::CPU(
     dispatchTable.emplace(0xD, [this](Opcode opcode) { OP_Dxyn(opcode); });
     dispatchTable.emplace(0xE, [this](Opcode opcode) { executeOP_0E(opcode); });
     dispatchTable.emplace(0xF, [this](Opcode opcode) { executeOP_0F(opcode); });
-    
+
     rng.seed(std::random_device()());
 };
 
@@ -35,7 +35,8 @@ void CPU::executeInstruction() {
         dispatchTable.at(opcode.operation)(opcode);
     }
     catch (const std::out_of_range & e) {
-        std::cout << "Invalid opcode.";
+        std::cout << "Invalid opcode: " << std::hex << opcode.instruction << std::endl;
+        std::cout << e.what() << std::endl;
     }
 }
 
@@ -312,24 +313,24 @@ Iterates row by row and column by column. Its eight columns because a sprite is 
 If a sprite pixel is on then there may be a collision with what's already being displayed, so we check if our screen pixel in the same location is set. If so we must set the VF register to express collision.
 */
 void CPU::OP_Dxyn(Opcode opcode) {
-    uint8_t xCord = registers.at(opcode.x) % Display::WIDTH;
-    uint8_t yCord = registers.at(opcode.y) % Display::HEIGHT;
-
     registers.at(0xF) = 0;
 
     for (int row = 0; row < opcode.n; row++) {
         uint8_t pixelByte = memory.page.at(index + row);
 
         for (int column = 0; column < 8; column++) {
+            uint8_t xCord = (registers.at(opcode.x) + column) % Display::WIDTH;
+            uint8_t yCord = (registers.at(opcode.y) + row) % Display::HEIGHT;
+
             // The instruction (0x80(128) >> column) has a special meaning. Its binary representation is 0b10000000 so we can shift the bit by column to check if a specific bit is set.
             uint8_t pixel = pixelByte & (0x80 >> column);
-            uint32_t screenPixel = display.getPixel(yCord, row, xCord, column);
+            uint32_t screenPixel = display.getPixel(yCord, xCord);
 
             if (pixel) {
                 if (screenPixel == 0xFFFFFFFF)
                     registers.at(0xF) = 1;
 
-                display.setPixel(yCord, row, xCord, column);
+                display.setPixel(yCord, xCord);
             }
         }
     }
