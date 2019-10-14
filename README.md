@@ -16,7 +16,7 @@
 1. Clone this repo.
 2. Make a build directory in the top level directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
-4. Run it: `./Chip8 <rom_name>`.
+4. Run it: `./Chip8 <rom_name>`. You can choose one from the 23 public domain ROMs in the `roms` directory.
 
 ## Testing the implementation
 There are two roms that can be used to check the CPU:
