@@ -8,12 +8,6 @@ void CPU::executeInstruction() {
 
     try {
         dispatchTable.at(opcode.operation)(opcode);
-
-        if (delayTimer > 0)
-            delayTimer--;
-        if (soundTimer > 0) {
-            soundTimer--;
-        }
     }
     catch (const std::out_of_range & e) {
         std::cout << "Invalid opcode.";
