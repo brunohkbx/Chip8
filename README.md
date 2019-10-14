@@ -48,6 +48,31 @@ There are two roms that can be used to check the CPU:
 ##### [chip8-test-rom](https://github.com/corax89/chip8-test-rom)
 `./Chip8 ../roms/test/chip8-test-rom.ch8`
 
+## Rubric points addressed
+### Loops, Functions, I/O
+| Rubric point  | Location |
+| ------------- | ------------- |
+| The project demonstrates an understanding of C++ functions and control structures.  |   Yes, check all the files
+| The project reads data from a file and process the data, or the program writes data to a file.  | [Memory](src/Memory.cpp) and [Beeper](src/Beeper.cpp)
+The project accepts user input and processes the input.  |   [main](src/main.cpp)
+
+### Object Oriented Programming
+| Rubric point  | Location |
+| ------------- | ------------- |
+| The project uses Object Oriented Programming techniques.  |   Yes, check all the files
+Classes use appropriate access specifiers for class members. | Yes, check all the files
+Class constructors utilize member initialization lists. | Yes, check all the files
+Classes abstract implementation details from their interfaces. | Yes, check all the files
+Classes encapsulate behavior. | Yes, check all the files
+
+### Memory Management
+| Rubric point  | Location |
+| ------------- | ------------- |
+| The project makes use of references in function declarations.  |   [CPU](src/Cpu.cpp)
+The project uses destructors appropriately. | [Renderer](src/Renderer.cpp) and [Beeper](src/Beeper.cpp)
+The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate. | Yes, check all the files
+The project follows the Rule of 5. | Yes, check all the files
+
 ## References
 http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#Ex9E
 
