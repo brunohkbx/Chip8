@@ -2,8 +2,6 @@
 #include "Display.h"
 
 Renderer::Renderer(std::string title) {
-    SDL_Init(SDL_INIT_VIDEO);
-
     window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_RESIZABLE);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     texture = SDL_CreateTexture(

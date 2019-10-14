@@ -9,8 +9,11 @@ void CPU::executeInstruction() {
     try {
         dispatchTable.at(opcode.operation)(opcode);
 
-        if (delayTimer)
+        if (delayTimer > 0)
             delayTimer--;
+        if (soundTimer > 0) {
+            soundTimer--;
+        }
     }
     catch (const std::out_of_range & e) {
         std::cout << "Invalid opcode.";
@@ -378,7 +381,7 @@ Set sound timer = Vx.
 ST is set equal to the value of Vx.
 */
 void CPU::OP_Fx18(Opcode opcode) {
-    // TODO: Implement sound timer
+    soundTimer = registers.at(opcode.x);
 }
 
 /*

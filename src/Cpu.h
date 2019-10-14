@@ -69,6 +69,8 @@ public:
     void executeInstruction();
     void incrementCounter();
 
+    uint8_t soundTimer{};
+
 private:
     Opcode fetchOpcode() const;
     void OP_00E0();

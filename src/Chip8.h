@@ -4,6 +4,7 @@
 #include "Cpu.h"
 #include "Display.h"
 #include "Keypad.h"
+#include "Beeper.h"
 
 class Chip8 {
 public:
@@ -13,6 +14,7 @@ public:
 
     Memory memory;
     Keypad keypad;
+    Beeper beeper;
 
 private:
     CPU cpu;
